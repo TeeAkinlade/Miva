@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getStudents, addStudent, Student } from '@/lib/database';
+import { getStudents, addStudent } from '@/lib/database';
 
 interface StudentData {
   name?: string;
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
       const gpaNumber = parseFloat(gpa);
       if (!isNaN(gpaNumber)) {
           filteredStudents = filteredStudents.filter(student =>
-              student.gpa >= gpaNumber 
+              student.gpa >= gpaNumber
           );
       }
   }
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Validation failed', errors: validationErrors }, { status: 400 });
   }
 
-  const studentWithId: Student = { ...newStudentData as Student, id: Date.now().toString() };
+  const studentWithId = { ...newStudentData as any, id: Date.now().toString() };
   addStudent(studentWithId);
   return NextResponse.json(studentWithId, { status: 201 });
 } 

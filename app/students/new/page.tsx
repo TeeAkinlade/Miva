@@ -27,7 +27,7 @@ const studentSchema = Yup.object().shape({
 export default function AddStudentPage() {
   const router = useRouter();
 
-  const handleSubmit = async (values: { name: string; registrationNumber: string; major: string; dob: string; gpa: string | number }, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
     try {
       const res = await fetch('/api/students', {
         method: 'POST',
@@ -36,7 +36,7 @@ export default function AddStudentPage() {
         },
         body: JSON.stringify({
           ...values,
-          gpa: parseFloat(values.gpa.toString()),
+          gpa: parseFloat(values.gpa),
         }),
       });
 
@@ -47,9 +47,8 @@ export default function AddStudentPage() {
         const errorData = await res.json();
         toast.error(errorData.message || 'Failed to add student');
       }
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      toast.error(errorMessage);
+    } catch (error: any) {
+      toast.error(error.message || 'An error occurred');
     } finally {
       setSubmitting(false);
     }
@@ -139,7 +138,6 @@ export default function AddStudentPage() {
                         <div className="text-red-500 text-sm mt-1">{errors.major}</div>
                       )}
                     </div>
-
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Date of Birth <span className="text-red-500">*</span>

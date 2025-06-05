@@ -1,4 +1,6 @@
-export interface Student {
+import { NextResponse } from 'next/server';
+
+interface Student {
   id: string;
   name: string;
   registrationNumber: string;

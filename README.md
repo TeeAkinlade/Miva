@@ -98,4 +98,3 @@ This project follows a standard Next.js application structure using the App Rout
 - Add error handling and loading states for better user experience.
 
 This project serves as a foundation for a more complex Student Information Management System. The structure and implemented features demonstrate key skills in frontend and basic backend development with Next.js.
->>>>>>> 19fa5e9 (initial commit)
