@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getStudents, addStudent, getStudentById, updateStudent } from '@/lib/database';
+import { getStudents, addStudent, Student } from '@/lib/database';
 
 interface StudentData {
   name?: string;
@@ -22,7 +22,7 @@ function validateStudentData(data: StudentData, isNew: boolean = true) {
     } else if (typeof data.gpa !== 'number' || data.gpa < 0 || data.gpa > 4.0) {
         errors.push('GPA must be a number between 0.0 and 4.0.');
     }
-  } else { // Validation for updates (fields might be optional, but validate if provided)
+  } else {
     if (data.name !== undefined && data.name === '') errors.push('Name cannot be empty.');
     if (data.registrationNumber !== undefined && data.registrationNumber === '') errors.push('Registration Number cannot be empty.');
     if (data.major !== undefined && data.major === '') errors.push('Major cannot be empty.');
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
       const gpaNumber = parseFloat(gpa);
       if (!isNaN(gpaNumber)) {
           filteredStudents = filteredStudents.filter(student =>
-              student.gpa >= gpaNumber // Assuming filtering for GPA greater than or equal to input
+              student.gpa >= gpaNumber 
           );
       }
   }
@@ -78,8 +78,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Validation failed', errors: validationErrors }, { status: 400 });
   }
 
-  // Simple ID generation for the in-memory database
-  const studentWithId = { ...newStudentData as any, id: Date.now().toString() }; // Cast to any to allow adding id
+  const studentWithId: Student = { ...newStudentData as Student, id: Date.now().toString() };
   addStudent(studentWithId);
   return NextResponse.json(studentWithId, { status: 201 });
 } 

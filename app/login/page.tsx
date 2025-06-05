@@ -18,7 +18,7 @@ const loginSchema = Yup.object().shape({
 export default function LoginPage() {
   const router = useRouter();
 
-  const handleLogin = async (values: { username: string; password: string }, { setSubmitting }: any) => {
+  const handleLogin = async (values: { username: string; password: string }, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
     try {
       const res = await fetch('/api/login', {
         method: 'POST',
@@ -35,7 +35,7 @@ export default function LoginPage() {
         const errorData = await res.json();
         toast.error(errorData.message || 'Login failed');
       }
-    } catch (error: any) {
+    } catch {
       toast.error('An error occurred during login');
     } finally {
       setSubmitting(false);

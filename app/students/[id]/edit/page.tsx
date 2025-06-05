@@ -52,7 +52,10 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
     fetchStudent();
   }, [id]);
 
-  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+  const handleSubmit = async (
+    values: { name: string; registrationNumber: string; major: string; dob: string; gpa: number | string },
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
+  ) => {
     try {
       const res = await fetch(`/api/students/${id}`, {
         method: 'PUT',

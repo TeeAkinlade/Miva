@@ -27,7 +27,7 @@ const studentSchema = Yup.object().shape({
 export default function AddStudentPage() {
   const router = useRouter();
 
-  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+  const handleSubmit = async (values: { name: string; registrationNumber: string; major: string; dob: string; gpa: string | number }, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
     try {
       const res = await fetch('/api/students', {
         method: 'POST',
@@ -36,7 +36,7 @@ export default function AddStudentPage() {
         },
         body: JSON.stringify({
           ...values,
-          gpa: parseFloat(values.gpa),
+          gpa: parseFloat(values.gpa.toString()),
         }),
       });
 
@@ -47,8 +47,9 @@ export default function AddStudentPage() {
         const errorData = await res.json();
         toast.error(errorData.message || 'Failed to add student');
       }
-    } catch (error: any) {
-      toast.error(error.message || 'An error occurred');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -57,7 +58,6 @@ export default function AddStudentPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        {/* Back button */}
         <button
           onClick={() => router.back()}
           className="flex items-center text-gray-900 hover:text-gray-800 mb-8 transition-colors"
@@ -66,15 +66,12 @@ export default function AddStudentPage() {
           Back to Students
         </button>
 
-        {/* Form Card */}
         <div className="bg-white shadow-xl rounded-lg overflow-hidden">
-          {/* Form Header */}
           <div className="bg-gradient-to-r from-gray-900 to-gray-700 p-6 flex items-center">
             <FaUserPlus className="text-white text-2xl mr-3" />
             <h1 className="text-2xl font-bold text-white">Add New Student</h1>
           </div>
 
-          {/* Form Content */}
           <div className="p-6">
             <Formik
               initialValues={{
@@ -90,7 +87,6 @@ export default function AddStudentPage() {
               {({ isSubmitting, errors, touched }) => (
                 <Form className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Name Field */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Full Name <span className="text-red-500">*</span>
@@ -108,7 +104,6 @@ export default function AddStudentPage() {
                       )}
                     </div>
 
-                    {/* Registration Number Field */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Registration Number <span className="text-red-500">*</span>
@@ -128,7 +123,6 @@ export default function AddStudentPage() {
                       )}
                     </div>
 
-                    {/* Major Field */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Major <span className="text-red-500">*</span>
@@ -146,7 +140,6 @@ export default function AddStudentPage() {
                       )}
                     </div>
 
-                    {/* Date of Birth Field */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Date of Birth <span className="text-red-500">*</span>
@@ -164,7 +157,6 @@ export default function AddStudentPage() {
                       )}
                     </div>
 
-                    {/* GPA Field */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         GPA <span className="text-red-500">*</span>
@@ -185,8 +177,6 @@ export default function AddStudentPage() {
                       )}
                     </div>
                   </div>
-
-                  {/* Form Actions */}
                   <div className="flex justify-end pt-6 border-t">
                     <button
                       type="submit"

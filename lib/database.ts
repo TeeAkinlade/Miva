@@ -1,6 +1,4 @@
-import { NextResponse } from 'next/server';
-
-interface Student {
+export interface Student {
   id: string;
   name: string;
   registrationNumber: string;
@@ -9,7 +7,6 @@ interface Student {
   gpa: number;
 }
 
-// In-memory database
 let students: Student[] = [
   {
     id: "1",
