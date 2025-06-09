@@ -29,29 +29,28 @@ interface Student {
   gpa: number;
 }
 
-export default function EditStudentPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = React.use(params);
-  const { id } = resolvedParams;
+export default function EditStudentPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [student, setStudent] = useState<Student | undefined>(undefined);
   const router = useRouter();
 
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const res = await fetch(`/api/students/${id}`);
-        if (!res.ok) {
+        const response = await fetch(`/api/students/${id}`);
+        if (!response.ok) {
           throw new Error('Failed to fetch student');
         }
-        const data = await res.json();
+        const data = await response.json();
         setStudent(data);
       } catch (error) {
-        toast.error('Failed to load student details');
-        console.error('Error fetching student:', error);
+        toast.error('Failed to load student data');
+        router.push('/students');
       }
     };
 
     fetchStudent();
-  }, [id]);
+  }, [id, router]);
 
   const handleSubmit = async (values: StudentData, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
     try {
@@ -64,14 +63,14 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
       });
 
       if (res.ok) {
-        toast.success('Student updated successfully');
+        toast.success('Student updated successfully!');
         router.push(`/students/${id}`);
       } else {
-        throw new Error('Failed to update student');
+        const errorData = await res.json();
+        toast.error(errorData.message || 'Failed to update student');
       }
     } catch (error) {
-      toast.error('Failed to update student');
-      console.error('Error updating student:', error);
+      toast.error('An error occurred while updating the student');
     } finally {
       setSubmitting(false);
     }
@@ -88,7 +87,6 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        {/* Back button */}
         <button
           onClick={() => router.back()}
           className="flex items-center text-gray-900 hover:text-gray-700 mb-8 transition-colors"
@@ -97,14 +95,11 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
           Back to Student
         </button>
 
-        {/* Form Card */}
-        <div className="bg-white shadow-xl rounded-lg overflow-hidden">
-          {/* Form Header */}
+        <div className="bg-white shadow-xl rounded-lg overflow-hidden mt-3">
           <div className="bg-gradient-to-r from-gray-900 to-gray-700 p-6">
             <h1 className="text-2xl font-bold text-white">Edit Student Profile</h1>
           </div>
 
-          {/* Form Content */}
           <div className="p-6">
             <Formik
               initialValues={{
@@ -117,10 +112,9 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
               validationSchema={studentSchema}
               onSubmit={handleSubmit}
             >
-              {({ isSubmitting, errors, touched }) => (
+              {({ errors, touched, isSubmitting }) => (
                 <Form className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Name Field */}
                     <div>
                       <label className="block text-sm font-medium text-gray-900 mb-1">
                         Full Name <span className="text-red-500">*</span>
@@ -137,7 +131,6 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                       )}
                     </div>
 
-                    {/* Registration Number Field */}
                     <div>
                       <label className="block text-sm font-medium text-gray-900 mb-1">
                         Registration Number <span className="text-red-500">*</span>
@@ -156,7 +149,6 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                       )}
                     </div>
 
-                    {/* Major Field */}
                     <div>
                       <label className="block text-sm font-medium text-gray-900 mb-1">
                         Major <span className="text-red-500">*</span>
@@ -173,7 +165,6 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                       )}
                     </div>
 
-                    {/* Date of Birth Field */}
                     <div>
                       <label className="block text-sm font-medium text-gray-900 mb-1">
                         Date of Birth <span className="text-red-500">*</span>
@@ -189,6 +180,7 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                         <div className="text-red-500 text-sm mt-1">{errors.dob}</div>
                       )}
                     </div>
+
                     <div>
                       <label className="block text-sm font-medium text-gray-900 mb-1">
                         GPA <span className="text-red-500">*</span>
@@ -208,7 +200,8 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
                       )}
                     </div>
                   </div>
-                  <div className="flex justify-end space-x-4 pt-6 border-t">
+
+                  <div className="flex justify-end space-x-4">
                     <button
                       type="button"
                       onClick={() => router.push(`/students/${id}`)}

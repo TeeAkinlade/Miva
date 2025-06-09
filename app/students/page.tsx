@@ -52,15 +52,11 @@ export default function StudentsPage() {
 
   useEffect(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    const searchGpa = parseFloat(searchTerm);
-    const isNumericSearch = !isNaN(searchGpa);
-
     const filtered = allStudents.filter(student => {
       const nameIncludes = student.name.toLowerCase().includes(lowerCaseSearchTerm);
       const majorIncludes = student.major.toLowerCase().includes(lowerCaseSearchTerm);
       const gpaStringIncludes = student.gpa.toFixed(2).includes(lowerCaseSearchTerm);
-      const gpaNumericMatch = isNumericSearch && student.gpa >= searchGpa;
-      return nameIncludes || majorIncludes || gpaStringIncludes || gpaNumericMatch;
+      return nameIncludes || majorIncludes || gpaStringIncludes;
     });
     setFilteredStudents(filtered);
 
@@ -80,7 +76,6 @@ export default function StudentsPage() {
     setActiveDropdown(activeDropdown === id ? null : id);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (activeDropdown) {
