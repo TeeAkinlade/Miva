@@ -77,7 +77,7 @@ export default function LoginPage() {
                     type="text"
                     placeholder="Username"
                     autoComplete="username"
-                    className="w-full p-3 border rounded bg-gray-700 border-gray-600 focus:border-gray-100 text-white placeholder-gray-400 focus:outline-none focus:ring-0"
+                    className="w-full p-3 border-1 rounded bg-gray-700 border-gray-600 focus:border-gray-100 text-white placeholder-gray-400 focus:outline-none focus:ring-0"
                   />
                   {errors.username && touched.username && (
                     <div className="text-secondary text-sm mt-1">
@@ -92,7 +92,7 @@ export default function LoginPage() {
                     type="password"
                     placeholder="Enter your password"
                     autoComplete="current-password"
-                    className="w-full p-3 border rounded bg-gray-700 border-gray-600 focus:border-gray-100 text-white placeholder-gray-400 focus:outline-none focus:ring-0"
+                    className="w-full p-3 border-1 rounded bg-gray-700 border-gray-600 focus:border-gray-100 text-white placeholder-gray-400 focus:outline-none focus:ring-0"
                   />
                   {errors.password && touched.password && (
                     <div className="text-secondary text-sm mt-1">
