@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { FaArrowLeft, FaUserPlus, FaSave } from 'react-icons/fa';
+import { StudentData } from '@/app/api/students/route';
 
 const studentSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -27,7 +28,7 @@ const studentSchema = Yup.object().shape({
 export default function AddStudentPage() {
   const router = useRouter();
 
-  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+  const handleSubmit = async (values: StudentData, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
     try {
       const res = await fetch('/api/students', {
         method: 'POST',
@@ -36,7 +37,7 @@ export default function AddStudentPage() {
         },
         body: JSON.stringify({
           ...values,
-          gpa: parseFloat(values.gpa),
+          gpa: parseFloat(values.gpa?.toString() ?? ''),
         }),
       });
 
@@ -47,8 +48,12 @@ export default function AddStudentPage() {
         const errorData = await res.json();
         toast.error(errorData.message || 'Failed to add student');
       }
-    } catch (error: any) {
-      toast.error(error.message || 'An error occurred');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message || 'An error occurred');
+      } else {
+        toast.error('An error occurred');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -78,7 +83,7 @@ export default function AddStudentPage() {
                 registrationNumber: '',
                 major: '',
                 dob: '',
-                gpa: '',
+                gpa: undefined,
               }}
               validationSchema={studentSchema}
               onSubmit={handleSubmit}

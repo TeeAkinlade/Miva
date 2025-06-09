@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getStudents, addStudent } from '@/lib/database';
 
-interface StudentData {
+export interface StudentData {
   name?: string;
   registrationNumber?: string;
   major?: string;
@@ -48,13 +48,13 @@ export async function GET(request: Request) {
 
   if (name) {
     filteredStudents = filteredStudents.filter(student =>
-      student.name.toLowerCase().includes(name.toLowerCase())
+      student?.name?.toLowerCase().includes(name.toLowerCase())
     );
   }
 
   if (major) {
     filteredStudents = filteredStudents.filter(student =>
-      student.major.toLowerCase().includes(major.toLowerCase())
+      student?.major?.toLowerCase().includes(major.toLowerCase())
     );
   }
 
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
       const gpaNumber = parseFloat(gpa);
       if (!isNaN(gpaNumber)) {
           filteredStudents = filteredStudents.filter(student =>
-              student.gpa >= gpaNumber
+              student?.gpa !== undefined && student.gpa >= gpaNumber
           );
       }
   }
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Validation failed', errors: validationErrors }, { status: 400 });
   }
 
-  const studentWithId = { ...newStudentData as any, id: Date.now().toString() };
+  const studentWithId = { ...newStudentData as StudentData, id: Date.now().toString() };
   addStudent(studentWithId);
   return NextResponse.json(studentWithId, { status: 201 });
 } 

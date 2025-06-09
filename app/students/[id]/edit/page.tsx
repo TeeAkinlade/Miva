@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import toast from 'react-hot-toast';
 import React from 'react';
 import { FaArrowLeft, FaSave, FaTimes } from 'react-icons/fa';
+import { StudentData } from '@/app/api/students/route';
 
 const studentSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -52,7 +53,7 @@ export default function EditStudentPage({ params }: { params: Promise<{ id: stri
     fetchStudent();
   }, [id]);
 
-  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+  const handleSubmit = async (values: StudentData, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
     try {
       const res = await fetch(`/api/students/${id}`, {
         method: 'PUT',

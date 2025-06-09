@@ -1,12 +1,10 @@
-import { NextResponse } from 'next/server';
-
-interface Student {
+export interface Student {
   id: string;
-  name: string;
-  registrationNumber: string;
-  major: string;
-  dob: string;
-  gpa: number;
+  name?: string;
+  registrationNumber?: string;
+  major?: string;
+  dob?: string;
+  gpa?: number;
 }
 
 let students: Student[] = [

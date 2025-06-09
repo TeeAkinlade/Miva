@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
+import * as Yup from "yup";
 import Link from 'next/link';
 import { FaApple } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
@@ -18,7 +18,10 @@ const loginSchema = Yup.object().shape({
 export default function LoginPage() {
   const router = useRouter();
 
-  const handleLogin = async (values: { username: string; password: string }, { setSubmitting }: any) => {
+  const handleLogin = async (
+    values: { username: string; password: string },
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
+  ) => {
     try {
       const res = await fetch('/api/login', {
         method: 'POST',
@@ -35,7 +38,8 @@ export default function LoginPage() {
         const errorData = await res.json();
         toast.error(errorData.message || 'Login failed');
       }
-    } catch (error: any) {
+    } catch (error) {
+      console.error('Login error:', error);
       toast.error('An error occurred during login');
     } finally {
       setSubmitting(false);
